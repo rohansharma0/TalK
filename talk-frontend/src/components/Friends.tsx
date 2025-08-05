@@ -1,5 +1,5 @@
-import { Box, ButtonBase, Grid, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { Box, Grid, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 
 import { useAuth } from "../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
@@ -9,12 +9,15 @@ import NavBar from "./NavBar";
 import { useDebounce } from "../hooks/useDebounce";
 import type { IUser } from "../types/User";
 import SearchBar from "./SearchBar";
-import User from "./User";
+import { friendService } from "../services/friendServices";
+import Friend from "./Friend";
+import SearchedUser from "./SearchedUser";
 
 const Friends = () => {
     const { user } = useAuth();
     const [search, setSearch] = useState("");
     const debouncedSearch = useDebounce(search, 300);
+    const [friendList, setFriendList] = useState<IUser[]>([]);
 
     const { data: users } = useQuery<IUser[]>({
         queryKey: ["users", debouncedSearch],
@@ -24,8 +27,19 @@ const Friends = () => {
 
     const { data: friends } = useQuery<IUser[]>({
         queryKey: ["friends", debouncedSearch],
-        queryFn: () => userService.getFriends(),
+        queryFn: () => friendService.getFriends(),
     });
+
+    useEffect(() => {
+        if (friends) {
+            setFriendList(friends);
+        }
+    }, [friends]);
+
+    const handleRemove = async (userId: string) => {
+        await friendService.removeFriend(userId);
+        setFriendList((prev) => prev.filter((r) => r._id !== userId));
+    };
 
     return (
         <React.Fragment>
@@ -35,8 +49,10 @@ const Friends = () => {
                     height: "100vh",
                     outline: "1px solid #313131",
                     zIndex: 2,
+                    display: "flex",
+                    flexDirection: "column",
                 }}>
-                <NavBar isActionEnable={false} />
+                <NavBar />
                 <SearchBar search={search} setSearch={setSearch} />
                 <Box
                     display="flex"
@@ -44,32 +60,41 @@ const Friends = () => {
                     justifyContent="flex-start"
                     overflow="auto"
                     gap="0.5rem"
-                    py="0.5rem">
+                    py="0.5rem"
+                    sx={{
+                        flexGrow: "1",
+                        overflowY: "auto",
+                    }}>
                     {debouncedSearch ? (
                         <>
-                            {users?.map((user: IUser) => {
-                                return (
-                                    <ButtonBase
-                                        key={user._id}
-                                        sx={{
-                                            width: "100%",
-                                        }}>
-                                        <User userData={user} />
-                                    </ButtonBase>
-                                );
+                            {users?.map((u: IUser) => {
+                                if (u._id !== user?._id) {
+                                    return (
+                                        <Box
+                                            key={u._id}
+                                            sx={{
+                                                width: "100%",
+                                            }}>
+                                            <SearchedUser user={u} />
+                                        </Box>
+                                    );
+                                }
                             })}
                         </>
                     ) : (
                         <>
-                            {friends?.map((user: IUser) => {
+                            {friendList?.map((user: IUser) => {
                                 return (
-                                    <ButtonBase
+                                    <Box
                                         key={user._id}
                                         sx={{
                                             width: "100%",
                                         }}>
-                                        <User userData={user} isFriend={true} />
-                                    </ButtonBase>
+                                        <Friend
+                                            friend={user}
+                                            onRemove={handleRemove}
+                                        />
+                                    </Box>
                                 );
                             })}
                         </>

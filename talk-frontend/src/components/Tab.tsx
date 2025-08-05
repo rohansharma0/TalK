@@ -4,7 +4,7 @@ import Chats from "./Chats";
 import Profile from "./Profile";
 import Settings from "./Settings";
 import type { ReactNode } from "react";
-import AddFriend from "./AddFriend";
+import Requests from "./Requests";
 import Friends from "./Friends";
 
 const Tab = () => {
@@ -12,7 +12,7 @@ const Tab = () => {
 
     const tabs = {
         chats: <Chats />,
-        "add-friend": <AddFriend />,
+        requests: <Requests />,
         friends: <Friends />,
         settings: <Settings />,
         profile: <Profile />,

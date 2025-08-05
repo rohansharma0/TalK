@@ -1,37 +1,61 @@
-import { Box, ButtonBase, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
-import { useAuth } from "../context/AuthContext";
 import { useQuery } from "@tanstack/react-query";
-import { userService } from "../services/userServices";
 
 import PersonAddAlt1OutlinedIcon from "@mui/icons-material/PersonAddAlt1Outlined";
 import NavBar from "./NavBar";
-import type { IUser } from "../types/User";
 import SearchBar from "./SearchBar";
-import User from "./User";
 import { useDebounce } from "../hooks/useDebounce";
+import { requestService } from "../services/requestServices";
+import type { IRequest } from "../types/Request";
+import Request from "./Request";
+import { friendService } from "../services/friendServices";
 
-const AddFriend = () => {
-    const { user } = useAuth();
+const Requests = () => {
     const [search, setSearch] = useState("");
     const debouncedSearch = useDebounce(search, 300);
-    const [filteredRequests, setFilteredRequests] = useState<IUser[]>([]);
+    const [filteredRequests, setFilteredRequests] = useState<IRequest[]>([]);
 
-    const { data: requests } = useQuery<IUser[]>({
+    const { data: requests } = useQuery<IRequest[]>({
         queryKey: ["requests"],
-        queryFn: userService.getRequests,
+        queryFn: requestService.getRequests,
     });
+
+    const [requestList, setRequestList] = useState<IRequest[]>([]);
+
+    useEffect(() => {
+        if (requests) {
+            setRequestList(requests.filter((req) => req.status === "RECEIVE"));
+        }
+    }, [requests]);
 
     useEffect(() => {
         const filtered =
-            requests?.filter((user) =>
-                user.username
+            requestList?.filter((request) =>
+                request?.user?.username
                     .toLowerCase()
-                    .includes(debouncedSearch.toLowerCase())
+                    .startsWith(debouncedSearch.toLowerCase())
             ) ?? [];
         setFilteredRequests(filtered);
-    }, [debouncedSearch, requests]);
+    }, [debouncedSearch, requestList]);
+
+    const handleCancel = async (userId: string) => {
+        try {
+            await requestService.cancelRequest(userId);
+            setRequestList((prev) => prev.filter((r) => r.user._id !== userId));
+        } catch (err) {
+            console.log(err);
+        }
+    };
+    const handleAccept = async (userId: string) => {
+        try {
+            await friendService.makeFriend(userId);
+            setRequestList((prev) => prev.filter((r) => r.user._id !== userId));
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     return (
         <React.Fragment>
@@ -41,8 +65,10 @@ const AddFriend = () => {
                     height: "100vh",
                     outline: "1px solid #313131",
                     zIndex: 2,
+                    display: "flex",
+                    flexDirection: "column",
                 }}>
-                <NavBar isActionEnable={false} />
+                <NavBar />
                 <SearchBar search={search} setSearch={setSearch} />
                 <Box
                     display="flex"
@@ -50,16 +76,24 @@ const AddFriend = () => {
                     justifyContent="flex-start"
                     overflow="auto"
                     gap="0.5rem"
-                    py="0.5rem">
-                    {filteredRequests?.map((requests) => {
+                    py="0.5rem"
+                    sx={{
+                        flexGrow: "1",
+                        overflowY: "auto",
+                    }}>
+                    {filteredRequests?.map((request: IRequest) => {
                         return (
-                            <ButtonBase
-                                key={requests._id}
+                            <Box
+                                key={request.user._id}
                                 sx={{
                                     width: "100%",
                                 }}>
-                                <User userData={requests} />
-                            </ButtonBase>
+                                <Request
+                                    request={request}
+                                    onCancel={handleCancel}
+                                    onAccept={handleAccept}
+                                />
+                            </Box>
                         );
                     })}
                 </Box>
@@ -92,4 +126,4 @@ const AddFriend = () => {
     );
 };
 
-export default AddFriend;
+export default Requests;

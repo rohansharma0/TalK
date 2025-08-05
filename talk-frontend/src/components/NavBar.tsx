@@ -17,7 +17,7 @@ import { useNavigate } from "react-router";
 import { useAuth } from "../context/AuthContext";
 import { useState, type MouseEvent } from "react";
 
-const NavBar = ({ isActionEnable }: { isActionEnable: boolean }) => {
+const NavBar = ({ isActionEnable = false }: { isActionEnable?: boolean }) => {
     const navigate = useNavigate();
     const { logout } = useAuth();
 

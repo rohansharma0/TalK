@@ -3,7 +3,7 @@ import User from "../models/user.model";
 
 import { generateToken } from "../utils/jwt";
 
-import Request from "../models/request.model";
+import Request from "../models/requests.model";
 import Friend from "../models/friend.model";
 
 export const register = async (data: {

@@ -8,10 +8,18 @@ import PersonAddAlt1OutlinedIcon from "@mui/icons-material/PersonAddAlt1Outlined
 import { useAuth } from "../context/AuthContext";
 import { userTab } from "../context/TabContext";
 import { NotificationBadge } from "./NotificationIndicator";
+import { requestService } from "../services/requestServices";
+import { useQuery } from "@tanstack/react-query";
 
 const SideBar = ({ children }: { children: any }) => {
     const { user } = useAuth();
     const { setSelectedTab } = userTab();
+
+    const { data: receiveRequestCount } = useQuery<number>({
+        queryKey: ["receive-request-count"],
+        queryFn: requestService.getReceiveRequestCount,
+    });
+
     return (
         <React.Fragment>
             <AppBar
@@ -47,18 +55,20 @@ const SideBar = ({ children }: { children: any }) => {
                             />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Add friend" placement="right">
+                    <Tooltip title="Requests" placement="right">
                         <IconButton
-                            aria-label="add-friend"
+                            aria-label="requests"
                             size="large"
                             color="inherit"
-                            onClick={() => setSelectedTab("add-friend")}>
+                            onClick={() => setSelectedTab("requests")}>
                             <PersonAddAlt1OutlinedIcon />
-                            <NotificationBadge
-                                badgeContent={2}
-                                color="primary"
-                                overlap="circular"
-                            />
+                            {receiveRequestCount && receiveRequestCount > 0 ? (
+                                <NotificationBadge
+                                    badgeContent={receiveRequestCount}
+                                    color="primary"
+                                    overlap="circular"
+                                />
+                            ) : null}
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Friends" placement="right">
