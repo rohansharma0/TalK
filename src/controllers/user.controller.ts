@@ -55,7 +55,36 @@ export const removeFriend = async (req: Request, res: Response) => {
             successResponse(200, "Friend removed successfully.", result)
         );
     } catch (err: any) {
-        logger.error("Something went wrong!", { message: err.message });
+        logger.error("Friend removed: Something went wrong!", {
+            message: err.message,
+        });
+        res.status(400).json(errorResponse(400, err.message));
+    }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+    try {
+        const result = await UserService.updateUser(req.body, req.user.userId);
+        res.status(200).json(
+            successResponse(200, "User updated successfully.", result)
+        );
+    } catch (err: any) {
+        logger.error("Login Error", { message: err.message });
+        res.status(400).json(errorResponse(400, err.message));
+    }
+};
+
+export const changePassword = async (req: Request, res: Response) => {
+    try {
+        const result = await UserService.changePassword(
+            req.body,
+            req.user.userId
+        );
+        res.status(200).json(
+            successResponse(200, "Password changed successfully.", result)
+        );
+    } catch (err: any) {
+        logger.error("Password change Error", { message: err.message });
         res.status(400).json(errorResponse(400, err.message));
     }
 };

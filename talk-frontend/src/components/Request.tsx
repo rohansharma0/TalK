@@ -1,13 +1,16 @@
 import { Button, ButtonGroup, Toolbar } from "@mui/material";
-import type { IRequest } from "../types/Request";
+import type { REQUEST_STATUS } from "../types/Request";
 import User from "./User";
+import type { IUser } from "../types/User";
 
 const Request = ({
-    request,
+    user,
+    status,
     onCancel,
     onAccept,
 }: {
-    request: IRequest;
+    user: IUser;
+    status: REQUEST_STATUS;
     onCancel: (userId: string) => void;
     onAccept: (userId: string) => void;
 }) => {
@@ -20,25 +23,35 @@ const Request = ({
                 alignItems: "center",
                 gap: "1rem",
             }}>
-            <User user={request.user} />
-            <ButtonGroup
-                disableElevation
-                color="primary"
-                variant="contained"
-                aria-label="request-actions">
+            <User user={user} />
+            {status === "SEND" && (
                 <Button
                     size="small"
                     variant="outlined"
-                    onClick={() => onCancel(request.user._id)}>
+                    onClick={() => onCancel(user._id)}>
                     Cancel
                 </Button>
-                <Button
-                    size="small"
+            )}
+            {status === "RECEIVE" && (
+                <ButtonGroup
+                    disableElevation
+                    color="primary"
                     variant="contained"
-                    onClick={() => onAccept(request.user._id)}>
-                    Accept
-                </Button>
-            </ButtonGroup>
+                    aria-label="request-actions">
+                    <Button
+                        size="small"
+                        variant="outlined"
+                        onClick={() => onCancel(user._id)}>
+                        Cancel
+                    </Button>
+                    <Button
+                        size="small"
+                        variant="contained"
+                        onClick={() => onAccept(user._id)}>
+                        Accept
+                    </Button>
+                </ButtonGroup>
+            )}
         </Toolbar>
     );
 };

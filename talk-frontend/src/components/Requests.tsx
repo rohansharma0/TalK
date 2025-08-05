@@ -89,7 +89,8 @@ const Requests = () => {
                                     width: "100%",
                                 }}>
                                 <Request
-                                    request={request}
+                                    user={request.user}
+                                    status={request.status}
                                     onCancel={handleCancel}
                                     onAccept={handleAccept}
                                 />

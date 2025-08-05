@@ -28,7 +28,8 @@ import Message from "./Message";
 import { v4 as uuidv4 } from "uuid";
 import { decryptMessage } from "../socket/socket";
 import { useSocket } from "../context/SocketContext";
-
+import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
+import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
 const PersonalChat = ({ data }: { data: IConversation }) => {
     const { user } = useAuth();
 
@@ -124,7 +125,7 @@ const PersonalChat = ({ data }: { data: IConversation }) => {
                     boxShadow: "none",
                     zIndex: 1,
                 }}>
-                <Toolbar sx={{ display: "flex", width: "100%" }}>
+                <Toolbar sx={{ display: "flex", width: "100%", gap: "1rem" }}>
                     <Box
                         display="flex"
                         flexDirection="row"
@@ -141,7 +142,20 @@ const PersonalChat = ({ data }: { data: IConversation }) => {
                             {`${otherUser.firstname} ${otherUser.lastname}`}
                         </Typography>
                     </Box>
-
+                    <IconButton
+                        size="large"
+                        aria-label="audio-call"
+                        edge="end"
+                        color="inherit">
+                        <CallOutlinedIcon />
+                    </IconButton>
+                    <IconButton
+                        size="large"
+                        aria-label="video-call"
+                        edge="end"
+                        color="inherit">
+                        <VideocamOutlinedIcon />
+                    </IconButton>
                     <IconButton
                         size="large"
                         aria-label="chats-menu-button"

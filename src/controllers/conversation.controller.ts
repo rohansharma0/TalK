@@ -19,10 +19,12 @@ export const getConversations = async (req: Request, res: Response) => {
 
 export const createGroupConversation = async (req: Request, res: Response) => {
     try {
-        const result = await ConversationService.createConversation(req.body, {
-            isGroup: true,
-            createdBy: req.user.userId,
-        });
+        const result = await ConversationService.createGroupConversation(
+            req.body,
+            {
+                createdBy: req.user.userId,
+            }
+        );
         res.status(200).json(
             successResponse(200, "Conversation created successfully.", result)
         );

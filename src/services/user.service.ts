@@ -1,4 +1,5 @@
-import User from "../models/user.model";
+import bcrypt from "bcryptjs";
+import User, { IUser } from "../models/user.model";
 import mongoose, { Types } from "mongoose";
 
 import Requests from "../models/requests.model";
@@ -165,10 +166,11 @@ export const makeFriend = async (
     await receiverFriendDoc.save();
     await removeRequest(data, authUserId);
 
-    const conversation = await ConversationService.createConversation(
-        { members: [data.userId, authUserId] },
-        { isGroup: false, createdBy: authUserId }
-    );
+    const conversation = await ConversationService.createConversation({
+        userOne: data.userId,
+        userTwo: authUserId,
+        createdBy: authUserId,
+    });
     // const senderSockets = userSocketMap[data.userId];
     // const receiverSockets = userSocketMap[authUserId];
 
@@ -233,4 +235,44 @@ export const removeFriend = async (
 export const isUsernameAvailable = async (username: string) => {
     const existingUser = await User.findOne({ username: username });
     return !existingUser;
+};
+
+export const updateUser = async (
+    user: {
+        firstname: string;
+        lastname: string;
+        username: string;
+        avatar: string;
+    },
+    userId: string
+) => {
+    return await User.updateOne(
+        { _id: userId },
+        {
+            set: {
+                username: user.firstname,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                avatar: user.avatar,
+            },
+        }
+    );
+};
+
+export const changePassword = async (
+    data: {
+        currentPassword: string;
+        password: string;
+    },
+    userId: string
+) => {
+    const existingUser = await User.findOne({ _id: userId });
+    if (!existingUser) throw new Error("User not found.");
+    const isMatch = await bcrypt.compare(
+        data.currentPassword,
+        existingUser.password
+    );
+    if (!isMatch) throw new Error("Invalid credentials.");
+    existingUser.password = await bcrypt.hash(data.password, 10);
+    return await existingUser.save();
 };

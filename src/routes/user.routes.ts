@@ -10,6 +10,10 @@ const router = express.Router();
 
 router.get("/search", authenticateUser, UserController.seachUserByUsername);
 
+router.post("/user", authenticateUser, UserController.updateUser);
+
+router.post("/password", authenticateUser, UserController.changePassword);
+
 router.get("/friends", authenticateUser, UserController.getFriends);
 
 router.post("/friend", authenticateUser, UserController.makeFriend);
