@@ -5,21 +5,20 @@ import * as ConversationController from "../controllers/conversation.controller"
 import { authenticateUser } from "../middlewares/auth.middleware";
 import { groupConversationSchema } from "../schemas/conversation.schema";
 import { validateRequest } from "../middlewares/validateRequest";
+
 const router = express.Router();
 
 router.get("/search", authenticateUser, UserController.seachUserByUsername);
 
-router.get("/requests", authenticateUser, UserController.getRequests);
+router.post("/user", authenticateUser, UserController.updateUser);
 
-router.post("/request", authenticateUser, UserController.sendRequest);
-
-router.delete("/request", authenticateUser, UserController.removeRequest);
+router.post("/password", authenticateUser, UserController.changePassword);
 
 router.get("/friends", authenticateUser, UserController.getFriends);
 
 router.post("/friend", authenticateUser, UserController.makeFriend);
 
-router.delete("/friend", authenticateUser, UserController.removeFriend);
+router.post("/remove-friend", authenticateUser, UserController.removeFriend);
 
 router.get(
     "/conversations",

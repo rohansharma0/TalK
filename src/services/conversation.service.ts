@@ -11,14 +11,13 @@ export const getConversations = async (authUserId: string) => {
     }).populate("members", "_id username firstname lastname avatar");
 };
 
-export const createConversation = async (
+export const createGroupConversation = async (
     data: {
-        name?: string;
+        name: string;
         avatar?: string;
         members: string[];
     },
     info: {
-        isGroup: boolean;
         createdBy: string;
     }
 ) => {
@@ -31,14 +30,12 @@ export const createConversation = async (
         }
     });
 
-    if (info.isGroup) {
-        adminList.push(new mongoose.Types.ObjectId(info.createdBy));
-    }
+    adminList.push(new mongoose.Types.ObjectId(info.createdBy));
 
     const conversation = new Conversation({
         name: data.name,
         avatar: data.avatar,
-        isGroup: info.isGroup,
+        isGroup: true,
         members: memberList,
         admins: adminList,
         createdBy: new mongoose.Types.ObjectId(info.createdBy),
@@ -46,31 +43,86 @@ export const createConversation = async (
 
     await conversation.save();
 
-    data.members.map((id) => {
-        const sockets = userSocketMap[id];
-        if (sockets && sockets.size != 0) {
-            if (id === info.createdBy) {
-                sockets.forEach((socket) => {
-                    socket.join(
-                        (conversation._id as Types.ObjectId).toString()
-                    );
-                    socket.emit("conversation", {
-                        message: "Conversation added.",
-                    });
-                });
-            } else {
-                sockets.forEach((socket) => {
-                    socket.join(
-                        (conversation._id as Types.ObjectId).toString()
-                    );
-                    socket.emit("conversation", {
-                        message: "Conversation added.",
-                    });
-                });
-            }
-        }
+    // data.members.map((id) => {
+    //     const sockets = userSocketMap[id];
+    //     if (sockets && sockets.size != 0) {
+    //         if (id === info.createdBy) {
+    //             sockets.forEach((socket) => {
+    //                 socket.join(
+    //                     (conversation._id as Types.ObjectId).toString()
+    //                 );
+    //                 socket.emit("conversation", {
+    //                     message: "Conversation added.",
+    //                 });
+    //             });
+    //         } else {
+    //             sockets.forEach((socket) => {
+    //                 socket.join(
+    //                     (conversation._id as Types.ObjectId).toString()
+    //                 );
+    //                 socket.emit("conversation", {
+    //                     message: "Conversation added.",
+    //                 });
+    //             });
+    //         }
+    //     }
+    // });
+
+    return conversation;
+};
+
+export const createConversation = async (data: {
+    userOne: string;
+    userTwo: string;
+    createdBy: string;
+}) => {
+    const memberList: mongoose.Types.ObjectId[] = [];
+
+    if (mongoose.Types.ObjectId.isValid(data.userOne)) {
+        memberList.push(new mongoose.Types.ObjectId(data.userOne));
+    }
+    if (mongoose.Types.ObjectId.isValid(data.userTwo)) {
+        memberList.push(new mongoose.Types.ObjectId(data.userTwo));
+    }
+
+    const oldConversation = await Conversation.findOne({
+        members: { $in: [data.userOne] },
     });
 
+    if (oldConversation) return oldConversation;
+
+    const conversation = new Conversation({
+        isGroup: false,
+        members: memberList,
+        createdBy: new mongoose.Types.ObjectId(data.createdBy),
+    });
+
+    await conversation.save();
+
+    // data.members.map((id) => {
+    //     const sockets = userSocketMap[id];
+    //     if (sockets && sockets.size != 0) {
+    //         if (id === info.createdBy) {
+    //             sockets.forEach((socket) => {
+    //                 socket.join(
+    //                     (conversation._id as Types.ObjectId).toString()
+    //                 );
+    //                 socket.emit("conversation", {
+    //                     message: "Conversation added.",
+    //                 });
+    //             });
+    //         } else {
+    //             sockets.forEach((socket) => {
+    //                 socket.join(
+    //                     (conversation._id as Types.ObjectId).toString()
+    //                 );
+    //                 socket.emit("conversation", {
+    //                     message: "Conversation added.",
+    //                 });
+    //             });
+    //         }
+    //     }
+    // });
     return conversation;
 };
 

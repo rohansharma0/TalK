@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, type ReactNode } from "react";
 
-type Tab = "chats" | "add-friend" | "friends" | "profile" | "settings";
+type Tab = "chats" | "requests" | "friends" | "profile" | "settings";
 
 interface ITabContext {
     selectedTab: Tab;

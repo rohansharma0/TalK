@@ -3,7 +3,7 @@ import User from "../models/user.model";
 
 import { generateToken } from "../utils/jwt";
 
-import Request from "../models/request.model";
+import Request from "../models/requests.model";
 import Friend from "../models/friend.model";
 
 export const register = async (data: {
@@ -39,10 +39,10 @@ export const register = async (data: {
 
 export const login = async (data: { username: string; password: string }) => {
     const user = await User.findOne({ username: data.username });
-    if (!user) throw new Error("Invalid credentials");
+    if (!user) throw new Error("Invalid credentials.");
 
     const isMatch = await bcrypt.compare(data.password, user.password);
-    if (!isMatch) throw new Error("Invalid credentials");
+    if (!isMatch) throw new Error("Invalid credentials.");
 
     const token = generateToken({
         userId: user._id,

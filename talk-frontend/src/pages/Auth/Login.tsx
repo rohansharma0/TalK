@@ -46,6 +46,7 @@ export default function Login() {
         handleSubmit,
         formState: { errors },
     } = useForm<FormValues>();
+
     const { login } = useAuth();
     const navigate = useNavigate();
 

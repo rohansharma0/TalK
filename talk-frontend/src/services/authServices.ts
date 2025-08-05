@@ -1,7 +1,8 @@
 import type { AuthResponse } from "../types/Auth/AuthResponse";
 import type { IUser } from "../types/User";
 import type { APIResponse } from "../types/APIResponse";
-import { axiosInstance } from "../utils/axiosInstance";
+
+import axios from "axios";
 
 const AUTH_API_URL = import.meta.env.VITE_BACKEND_URL + "/auth";
 
@@ -10,7 +11,7 @@ export const authService = {
         username: string,
         password: string
     ): Promise<AuthResponse> => {
-        const res = await axiosInstance.post<APIResponse<AuthResponse>>(
+        const res = await axios.post<APIResponse<AuthResponse>>(
             `${AUTH_API_URL}/login`,
             { username, password }
         );
@@ -29,7 +30,7 @@ export const authService = {
             username,
             password,
         };
-        const res = await axiosInstance.post<APIResponse<AuthResponse>>(
+        const res = await axios.post<APIResponse<AuthResponse>>(
             `${AUTH_API_URL}/register`,
             user
         );

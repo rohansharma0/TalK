@@ -1,7 +1,13 @@
 import type { IUser } from "./User";
 
-export interface IRequest {
+export interface IRequests {
     _id: string;
     userId: string;
-    requests: IUser[];
+    requests: IRequest[];
 }
+export interface IRequest {
+    user: IUser;
+    status: REQUEST_STATUS;
+}
+
+export type REQUEST_STATUS = "SEND" | "RECEIVE";

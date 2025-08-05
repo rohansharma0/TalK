@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 
 import { Box } from "@mui/material";
-import { TabProvider } from "../../context/TabContext";
-import Tab from "../../components/Tab";
-import { useSocket } from "../../context/SocketContext";
-import { useAuth } from "../../context/AuthContext";
+import { TabProvider } from "../context/TabContext";
+import Tab from "../components/Tab";
+import { useSocket } from "../context/SocketContext";
+import { useAuth } from "../context/AuthContext";
 import {
     connectSocket as connectSocketServer,
     disconnectSocket,
-} from "../../services/socketService";
-import SideBar from "../../components/SideBar";
+} from "../services/socketService";
+import SideBar from "../components/SideBar";
 
 const Home: React.FC = () => {
     const { isAuthenticated, token } = useAuth();
