@@ -1,10 +1,19 @@
 import winston from "winston";
 
-export const logger = winston.createLogger({
-    level: "info",
+const consoleTransport = new winston.transports.Console({
     format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.json()
+        winston.format.colorize(),
+        winston.format.printf(({ level, message, timestamp, stack }) => {
+            return `${timestamp} [${level}]: ${stack || message}`;
+        })
     ),
-    transports: [new winston.transports.Console()],
+});
+
+export const logger = winston.createLogger({
+    level: "debug",
+    format: winston.format.combine(
+        winston.format.errors({ stack: true }),
+        winston.format.timestamp()
+    ),
+    transports: [consoleTransport],
 });

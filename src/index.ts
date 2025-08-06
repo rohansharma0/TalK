@@ -5,6 +5,7 @@ import app from "./app";
 import { connectDB } from "./config/db";
 import { createServer } from "http";
 import { initSocket } from "./config/socket";
+import { logger } from "./utils/logger";
 
 const PORT = process.env.PORT || 3000;
 
@@ -14,6 +15,6 @@ connectDB().then(() => {
     initSocket(server);
 
     server.listen(PORT, () => {
-        console.log(`🚀 Server running on http://localhost:${PORT}`);
+        logger.debug(`Server running on PORT :${PORT}`);
     });
 });

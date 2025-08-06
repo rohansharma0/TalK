@@ -88,3 +88,24 @@ export const changePassword = async (req: Request, res: Response) => {
         res.status(400).json(errorResponse(400, err.message));
     }
 };
+
+export const isUsernameAvailable = async (req: Request, res: Response) => {
+    try {
+        const username = req?.query.username;
+        if (!username || typeof username !== "string") {
+            return res
+                .status(400)
+                .json(
+                    errorResponse(
+                        400,
+                        "Query parameter 'username' is required."
+                    )
+                );
+        }
+        const result = await UserService.isUsernameAvailable(username);
+        res.status(200).json(result);
+    } catch (err: any) {
+        logger.error("Login Error", { message: err.message });
+        res.status(400).json(errorResponse(400, err.message));
+    }
+};

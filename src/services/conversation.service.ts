@@ -1,7 +1,6 @@
 import mongoose, { Types } from "mongoose";
 import Conversation from "../models/conversation.model";
 import { Socket } from "socket.io";
-import { userSocketMap } from "../config/socket";
 
 export const getConversations = async (authUserId: string) => {
     return await Conversation.find({
