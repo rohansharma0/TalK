@@ -35,33 +35,47 @@ const Chats = () => {
     return (
         <React.Fragment>
             <Grid
-                size={7}
+                size={{ xs: 11, md: 9, lg: 7 }}
                 sx={{
                     height: "100vh",
                     outline: "1px solid #313131",
                     zIndex: 2,
+                    display: "flex",
+                    flexDirection: "column",
                 }}>
                 <NavBar isActionEnable={true} />
                 <SearchBar search={search} setSearch={setSearch} />
-                {conversations?.map((conversation, index) => {
-                    return (
-                        <ButtonBase
-                            key={conversation._id}
-                            sx={{
-                                width: "100%",
-                                justifyContent: "flex-start",
-                                padding: "1rem",
-                            }}
-                            onClick={() => setSelectedConversationIndex(index)}>
-                            <Conversation
-                                data={conversation}
-                                userId={user?._id}
-                            />
-                        </ButtonBase>
-                    );
-                })}
+                <Box
+                    display="flex"
+                    flexDirection="column"
+                    justifyContent="flex-start"
+                    overflow="auto"
+                    gap="0.5rem"
+                    py="0.5rem"
+                    sx={{
+                        flexGrow: "1",
+                        overflowY: "auto",
+                    }}>
+                    {conversations?.map((conversation, index) => {
+                        return (
+                            <ButtonBase
+                                key={conversation._id}
+                                sx={{
+                                    width: "100%",
+                                }}
+                                onClick={() =>
+                                    setSelectedConversationIndex(index)
+                                }>
+                                <Conversation
+                                    data={conversation}
+                                    userId={user?._id}
+                                />
+                            </ButtonBase>
+                        );
+                    })}
+                </Box>
             </Grid>
-            <Grid size={17} height="100vh">
+            <Grid size={{ xs: 13, md: 15, lg: 17 }} height="100vh">
                 {selectedConversation ? (
                     <>
                         {selectedConversation.isGroup ? (

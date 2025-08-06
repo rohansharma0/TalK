@@ -1,5 +1,5 @@
 import type { IConversation } from "../types/Conversation";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Avatar, Box, Toolbar, Typography } from "@mui/material";
 import type { IUser } from "../types/User";
 
 const Conversation = ({
@@ -38,28 +38,37 @@ const Conversation = ({
             return member._id !== userId;
         })[0];
         return (
-            <Box
-                display="flex"
-                justifyContent="start"
-                alignItems="center"
-                gap="1rem">
-                <Avatar
-                    alt="personal-avatar"
-                    src={otherUser.avatar}
-                    sx={{ width: 45, height: 45 }}
-                />
+            <Toolbar
+                sx={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: "1rem",
+                }}>
                 <Box
                     display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="start">
-                    <Typography fontWeight="500">{`${otherUser.firstname} ${otherUser.lastname}`}</Typography>
-                    <Typography
-                        color="grey"
-                        fontWeight="300"
-                        fontSize="0.9rem">{`@${otherUser.username}`}</Typography>
+                    justifyContent="start"
+                    alignItems="center"
+                    gap="1rem">
+                    <Avatar
+                        alt="personal-avatar"
+                        src={otherUser.avatar}
+                        sx={{ width: 45, height: 45 }}
+                    />
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                        alignItems="start">
+                        <Typography fontWeight="500">{`${otherUser.firstname} ${otherUser.lastname}`}</Typography>
+                        <Typography
+                            color="grey"
+                            fontWeight="300"
+                            fontSize="0.9rem">{`@${otherUser.username}`}</Typography>
+                    </Box>
                 </Box>
-            </Box>
+            </Toolbar>
         );
     };
 

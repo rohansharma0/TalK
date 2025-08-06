@@ -30,6 +30,7 @@ import { decryptMessage } from "../socket/socket";
 import { useSocket } from "../context/SocketContext";
 import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import VideocamOutlinedIcon from "@mui/icons-material/VideocamOutlined";
+
 const PersonalChat = ({ data }: { data: IConversation }) => {
     const { user } = useAuth();
 
@@ -174,18 +175,18 @@ const PersonalChat = ({ data }: { data: IConversation }) => {
                                 "aria-labelledby": "chats-menu-items",
                             },
                         }}>
-                        <MenuItem onClick={handleClose}>
+                        {/* <MenuItem onClick={handleClose}>
                             <ListItemIcon>
                                 <GroupAddOutlinedIcon fontSize="small" />
                             </ListItemIcon>
-                            <ListItemText>New group</ListItemText>
-                        </MenuItem>
-                        <Divider />
+                            <ListItemText></ListItemText>
+                        </MenuItem> */}
+                        {/* <Divider /> */}
                         <MenuItem onClick={handleClose}>
                             <ListItemIcon>
                                 <LogoutOutlinedIcon fontSize="small" />
                             </ListItemIcon>
-                            <ListItemText>Log out</ListItemText>
+                            <ListItemText>Delete chat</ListItemText>
                         </MenuItem>
                     </Menu>
                 </Toolbar>
