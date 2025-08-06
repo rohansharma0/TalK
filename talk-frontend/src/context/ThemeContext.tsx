@@ -14,26 +14,26 @@ export const CustomThemeProvider = ({
 }: {
     children: React.ReactNode;
 }) => {
-    const [mode, setMode] = useState<"light" | "dark">(() => {
+    const [theme, setTheme] = useState<"light" | "dark">(() => {
         return (localStorage.getItem("theme") as "light" | "dark") || "light";
     });
 
     const toggleColorMode = () => {
-        setMode((prev) => {
+        setTheme((prev) => {
             const next = prev === "light" ? "dark" : "light";
             localStorage.setItem("theme", next);
             return next;
         });
     };
 
-    const theme = useMemo(
-        () => (mode === "light" ? lightTheme : darkTheme),
-        [mode]
+    const currentTheme = useMemo(
+        () => (theme === "light" ? lightTheme : darkTheme),
+        [theme]
     );
 
     return (
         <ThemeModeContext.Provider value={{ toggleColorMode }}>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider theme={currentTheme}>
                 <CssBaseline />
                 {children}
             </ThemeProvider>

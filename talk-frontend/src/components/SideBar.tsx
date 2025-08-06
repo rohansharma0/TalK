@@ -4,6 +4,7 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import ChatIcon from "@mui/icons-material/Chat";
 import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import PersonAddAlt1OutlinedIcon from "@mui/icons-material/PersonAddAlt1Outlined";
+import AddCircleOutlinedIcon from "@mui/icons-material/AddCircleOutlined";
 
 import { useAuth } from "../context/AuthContext";
 import { userTab } from "../context/TabContext";
@@ -27,7 +28,6 @@ const SideBar = ({ children }: { children: any }) => {
                 sx={{
                     width: "75px",
                     minWidth: "75px",
-                    bgcolor: "#1d1f1f",
                     color: "#fff",
                     height: "100vh",
                     left: 0,
@@ -40,6 +40,19 @@ const SideBar = ({ children }: { children: any }) => {
                     padding: "0.5rem",
                     zIndex: 3,
                 }}>
+                <Tooltip title="Profile" placement="right">
+                    <IconButton
+                        aria-label="profile"
+                        color="primary"
+                        onClick={() => setSelectedTab("profile")}>
+                        <Avatar
+                            alt={user?.firstname[0] || "avatar"}
+                            src={user?.avatar}
+                            sx={{ width: 40, height: 40, color: "primary" }}>
+                            {user?.firstname[0]}
+                        </Avatar>
+                    </IconButton>
+                </Tooltip>
                 <Box display="flex" flexDirection="column" alignItems="center">
                     <Tooltip title="Chats" placement="right">
                         <IconButton
@@ -80,8 +93,6 @@ const SideBar = ({ children }: { children: any }) => {
                             <GroupOutlinedIcon />
                         </IconButton>
                     </Tooltip>
-                </Box>
-                <Box display="flex" flexDirection="column" alignItems="center">
                     <Tooltip title="Settings" placement="right">
                         <IconButton
                             aria-label="settings"
@@ -91,18 +102,15 @@ const SideBar = ({ children }: { children: any }) => {
                             <SettingsIcon />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Profile" placement="right">
-                        <IconButton
-                            aria-label="profile"
-                            color="inherit"
-                            onClick={() => setSelectedTab("profile")}>
-                            <Avatar
-                                alt={user?.firstname[0] || "avatar"}
-                                src={user?.avatar}
-                                sx={{ width: 30, height: 30 }}></Avatar>
-                        </IconButton>
-                    </Tooltip>
                 </Box>
+                <Tooltip title="New chat" placement="right">
+                    <IconButton
+                        aria-label=""
+                        color="inherit"
+                        onClick={() => setSelectedTab("profile")}>
+                        <AddCircleOutlinedIcon sx={{ width: 48, height: 48 }} />
+                    </IconButton>
+                </Tooltip>
             </AppBar>
             {children}
         </React.Fragment>

@@ -1,9 +1,8 @@
 import React from "react";
-import { Button, Grid, IconButton, useTheme } from "@mui/material";
+import { Button, Grid, IconButton } from "@mui/material";
 import { useThemeMode } from "../context/ThemeContext";
 
 const Settings = () => {
-    const theme = useTheme();
     const { toggleColorMode } = useThemeMode();
 
     return (

@@ -1,41 +1,57 @@
-import { createTheme } from "@mui/material";
+import { createTheme } from "@mui/material/styles";
+import type { ThemeOptions } from "@mui/material/styles";
+
+const commonThemeOptions: ThemeOptions = {
+    shape: {
+        borderRadius: 8,
+    },
+    components: {
+        MuiButtonBase: {
+            defaultProps: {
+                disableRipple: true,
+            },
+        },
+    },
+};
 
 export const lightTheme = createTheme({
+    ...commonThemeOptions,
     palette: {
         mode: "light",
         primary: {
-            main: "#1F2029ff",
-            // contrastText: "#fff",
+            main: "#1F2029", // raisin-black
         },
         secondary: {
-            main: "#8D8D8Dff",
+            main: "#8D8D8D", // battleship-gray
         },
         background: {
-            default: "#F8F8F9ff",
+            default: "#F8F8F9", // seasalt
+            paper: "#FFFFFF", // white
+        },
+        text: {
+            primary: "#1F2029",
+            secondary: "#585962", // davys-gray
         },
     },
 });
-// $white: #FFFFFFff; //backgroup
-// $seasalt: #F9F9F9ff; // outline border color
-// $battleship-gray: #8D8D8Dff; // secondary text color
-// $raisin-black: #1F2029ff; // primary color
 
-// --raisin-black: #1F2029ff; //backgroup
-// --raisin-black-2: #1F2029ff; // outline border color
-// --davys-gray: #585962ff;  // secondary text color
-// --seasalt: #F8F8F9ff; // primary color
 export const darkTheme = createTheme({
+    ...commonThemeOptions,
     palette: {
         mode: "dark",
         primary: {
-            main: "#F8F8F9ff",
-            // contrastText: "#000",
+            main: "#F8F8F9", // seasalt
         },
         secondary: {
-            main: "#585962ff",
+            main: "#585962", // davys-gray
         },
         background: {
-            default: "#1F2029ff",
+            default: "#1F2029", // raisin-black
+            paper: "#1F2029",
+        },
+        text: {
+            primary: "#F8F8F9",
+            secondary: "#8D8D8D", // battleship-gray
         },
     },
 });
