@@ -12,6 +12,4 @@ router.post(
 );
 router.post("/login", validateRequest(loginSchema), AuthController.login);
 
-router.get("/check", AuthController.isUsernameAvailable);
-
 export default router;

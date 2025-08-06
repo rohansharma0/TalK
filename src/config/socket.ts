@@ -3,6 +3,7 @@ import { Server as SocketIOServer, Socket } from "socket.io";
 import { authenticateUser } from "../middlewares/socket.middleware";
 import { IMessage } from "../types/Message";
 import * as ConversationService from "../services/conversation.service";
+import { logger } from "../utils/logger";
 
 let io: SocketIOServer;
 
@@ -34,7 +35,7 @@ export const initSocket = (server: HTTPServer) => {
                 userSocketMap[userId].add(socket);
 
                 await ConversationService.joinUserConversations(userId, socket);
-                console.log(`🔌 ${userId} connected with socket ${socket.id}`);
+                logger.debug(`${userId} connected with socket ${socket.id}`);
                 callback({
                     info: `${userId} connected with socket ${socket.id}`,
                 });
@@ -46,7 +47,7 @@ export const initSocket = (server: HTTPServer) => {
         });
 
         socket.on(SOCKET_EVENTS.DISCONNECT, () => {
-            console.log(`❌  ${userId} disconnected with socket ${socket.id}`);
+            logger.debug(`${userId} disconnected with socket ${socket.id}`);
 
             for (const [userId, sockets] of Object.entries(userSocketMap)) {
                 sockets.delete(socket);
