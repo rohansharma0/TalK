@@ -34,7 +34,12 @@ export const register = async (data: {
     await user.save();
     await request.save();
     await friend.save();
-    return user;
+    const token = generateToken({
+        userId: user._id,
+        username: user.username,
+    });
+
+    return { user, token };
 };
 
 export const login = async (data: { username: string; password: string }) => {

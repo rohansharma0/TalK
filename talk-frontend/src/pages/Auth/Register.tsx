@@ -12,6 +12,7 @@ import { styled } from "@mui/material/styles";
 import { useForm, Controller } from "react-hook-form";
 import { useNavigate } from "react-router";
 import { authService } from "../../services/authServices";
+import { useAuth } from "../../context/AuthContext";
 
 const Card = styled(MuiCard)(({ theme }) => ({
     display: "flex",
@@ -68,17 +69,23 @@ export default function Register() {
         handleSubmit,
         formState: { errors },
     } = useForm<FormValues>();
+
+    const { login } = useAuth();
+
     const navigate = useNavigate();
 
     const onSubmit = async (data: FormValues) => {
         try {
-            await authService.register(
+            const res = await authService.register(
                 data.firstname,
                 data.lastname,
                 data.username,
                 data.password
             );
-            navigate("/");
+            if (res && res.token) {
+                login(res);
+                navigate("/");
+            }
         } catch (err) {
             console.error("Registration failed:", err);
         }
