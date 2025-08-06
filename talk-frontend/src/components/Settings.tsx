@@ -1,7 +1,11 @@
 import React from "react";
-import { Grid } from "@mui/material";
+import { Button, Grid, IconButton, useTheme } from "@mui/material";
+import { useThemeMode } from "../context/ThemeContext";
 
 const Settings = () => {
+    const theme = useTheme();
+    const { toggleColorMode } = useThemeMode();
+
     return (
         <React.Fragment>
             <Grid
@@ -10,6 +14,12 @@ const Settings = () => {
                     height: "100vh",
                 }}>
                 Settings
+                <Button
+                    onClick={toggleColorMode}
+                    color="primary"
+                    variant="contained">
+                    Change Theme
+                </Button>
             </Grid>
             <Grid
                 size={16}
