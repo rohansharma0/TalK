@@ -1,5 +1,5 @@
 import type { IConversation } from "../types/Conversation";
-import { Avatar, Badge, Box, styled, Typography } from "@mui/material";
+import { Avatar, Badge, Box, styled, Toolbar, Typography } from "@mui/material";
 import type { IUser } from "../types/User";
 import { useEffect, useState } from "react";
 import { useSocket } from "../context/SocketContext";
@@ -99,32 +99,32 @@ const Conversation = ({
                     alignItems: "center",
                     gap: "1rem",
                 }}>
-            <Box
-                display="flex"
-                justifyContent="start"
-                alignItems="center"
-                gap="1rem">
-                {userOnline ? (
-                    <StyledBadge
-                        overlap="circular"
-                        anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "right",
-                        }}
-                        variant="dot">
+                <Box
+                    display="flex"
+                    justifyContent="start"
+                    alignItems="center"
+                    gap="1rem">
+                    {userOnline ? (
+                        <StyledBadge
+                            overlap="circular"
+                            anchorOrigin={{
+                                vertical: "bottom",
+                                horizontal: "right",
+                            }}
+                            variant="dot">
+                            <Avatar
+                                alt="personal-avatar"
+                                src={otherUser.avatar}
+                                sx={{ width: 45, height: 45 }}
+                            />
+                        </StyledBadge>
+                    ) : (
                         <Avatar
                             alt="personal-avatar"
                             src={otherUser.avatar}
                             sx={{ width: 45, height: 45 }}
                         />
-                    </StyledBadge>
-                ) : (
-                    <Avatar
-                        alt="personal-avatar"
-                        src={otherUser.avatar}
-                        sx={{ width: 45, height: 45 }}
-                    />
-                )}
+                    )}
                     <Box
                         display="flex"
                         flexDirection="column"
