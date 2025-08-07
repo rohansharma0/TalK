@@ -6,7 +6,6 @@ import socket, {
     importPublicKey,
 } from "../socket/socket";
 import type { IMessage } from "../types/Message";
-import CryptoJS from "crypto-js";
 
 export const connectSocket = async (
     token: string
