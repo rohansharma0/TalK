@@ -7,9 +7,9 @@ import { logger } from "../utils/logger";
 
 let io: SocketIOServer;
 
-export const userSocketMap: Record<string, Set<Socket>> = {};
+export const userSocketMap: Map<string, string> = new Map();
 
-const userPublicKeys: Record<string, string> = {};
+const userPublicKeys: Map<string, string> = new Map();
 
 export const initSocket = (server: HTTPServer) => {
     io = new SocketIOServer(server, {
@@ -27,14 +27,27 @@ export const initSocket = (server: HTTPServer) => {
         socket.on(
             SOCKET_EVENTS.CONNECT_USER,
             async ({ publicKey }, callback) => {
-                if (!userSocketMap[userId]) {
-                    userSocketMap[userId] = new Set();
+                const existingSocketId = userSocketMap.get(userId);
+
+                if (existingSocketId && existingSocketId !== socket.id) {
+                    const oldSocket = io.sockets.sockets.get(existingSocketId);
+                    if (oldSocket) {
+                        oldSocket.emit(SOCKET_EVENTS.FORCE_LOGOUT, {
+                            info: `User ${userId} is logged in from another device.`,
+                        });
+                        oldSocket.disconnect(true);
+                    }
                 }
 
-                userPublicKeys[userId] = publicKey;
-                userSocketMap[userId].add(socket);
+                userSocketMap.set(userId, socket.id);
+                socket.broadcast.emit(SOCKET_EVENTS.USER_STATUS, {
+                    userId,
+                    status: "ONLINE",
+                });
 
-                await ConversationService.joinUserConversations(userId, socket);
+                userPublicKeys.set(userId, publicKey);
+
+                // await ConversationService.joinUserConversations(userId, socket);
                 logger.debug(`${userId} connected with socket ${socket.id}`);
                 callback({
                     info: `${userId} connected with socket ${socket.id}`,
@@ -43,17 +56,18 @@ export const initSocket = (server: HTTPServer) => {
         );
 
         socket.on(SOCKET_EVENTS.GET_PUBLIC_KEY, (userId, callback) => {
-            callback(userPublicKeys[userId] || null);
+            callback(userPublicKeys.get(userId) || null);
         });
 
         socket.on(SOCKET_EVENTS.DISCONNECT, () => {
             logger.debug(`${userId} disconnected with socket ${socket.id}`);
 
-            for (const [userId, sockets] of Object.entries(userSocketMap)) {
-                sockets.delete(socket);
-                if (sockets.size === 0) {
-                    delete userSocketMap[userId];
-                }
+            if (userId && userSocketMap.get(userId) === socket.id) {
+                userSocketMap.delete(userId);
+                socket.broadcast.emit(SOCKET_EVENTS.USER_STATUS, {
+                    userId,
+                    status: "OFFLINE",
+                });
             }
         });
 
@@ -74,6 +88,8 @@ export const getIO = () => {
 export const SOCKET_EVENTS = {
     CONNECTION: "connection",
     CONNECT_USER: "connect:user",
+    USER_STATUS: "user:status",
+    FORCE_LOGOUT: "force:logout",
     DISCONNECT: "disconnect",
     MESSAGE_SEND: "message:send",
     MESSAGE_RECEIVE: "message:receive",
