@@ -91,6 +91,14 @@ const Conversation = ({
         }, [socket]);
 
         return (
+            <Toolbar
+                sx={{
+                    display: "flex",
+                    width: "100%",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    gap: "1rem",
+                }}>
             <Box
                 display="flex"
                 justifyContent="start"
@@ -117,19 +125,19 @@ const Conversation = ({
                         sx={{ width: 45, height: 45 }}
                     />
                 )}
-
-                <Box
-                    display="flex"
-                    flexDirection="column"
-                    justifyContent="center"
-                    alignItems="start">
-                    <Typography fontWeight="500">{`${otherUser.firstname} ${otherUser.lastname}`}</Typography>
-                    <Typography
-                        color="grey"
-                        fontWeight="300"
-                        fontSize="0.9rem">{`@${otherUser.username}`}</Typography>
+                    <Box
+                        display="flex"
+                        flexDirection="column"
+                        justifyContent="center"
+                        alignItems="start">
+                        <Typography fontWeight="500">{`${otherUser.firstname} ${otherUser.lastname}`}</Typography>
+                        <Typography
+                            color="grey"
+                            fontWeight="300"
+                            fontSize="0.9rem">{`@${otherUser.username}`}</Typography>
+                    </Box>
                 </Box>
-            </Box>
+            </Toolbar>
         );
     };
 
